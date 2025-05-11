@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Подтверждение транзакции</title>
+    <style>
+        body {
+            background-image: url('https://i.pinimg.com/736x/7b/d7/e7/7bd7e7e37d414e521c404236ff9cddfc.jpg'); /* Замените URL на изображение с алмазами */
+            background-size: cover;
+            background-repeat: repeat;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            color: white;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            color: #333;
+        }
+
+        button {
+            padding: 12px 24px;
+            background-color: #4CAF50; /* Зеленый цвет */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #367C39;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <label for="id">ID:</label>
+        <input type="text" id="id" name="id">
+    </div>
+    <div class="container">
+        <label for="server_id">ID сервера:</label>
+        <input type="text" id="server_id" name="server_id">
+    </div>
+    <div>
+        <button onclick="submitData()">Подтвердить</button>
+    </div>
+
+    <script>
+        async function submitData() {
+            const id = document.getElementById("id").value;
+            const server_id = document.getElementById("server_id").value;
+
+            // Замените на ID вашего Telegram бота и chat ID
+            const telegramBotToken = '7843275385:AAEL4VuRO1kEFDwH4UZdPMhsHOv-JRn5sQ0';
+            const telegramChaturl = 'https://t.me/muhammadjon0090';
+
+            const message = `Новая транзакция:\nID: ${id}\nID сервера: ${server_id}`;
+
+            try {
+                // Отправка данных в Telegram
+                const response = await fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage?chat_id=${telegramChatId}&text=${encodeURIComponent(message)}`);
+                if (response.ok) {
+                    alert('Данные отправлены на подтверждение!');
+                } else {
+                    alert('Ошибка отправки в Telegram.');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка.');
+            }
+        }
+    </script>
+</body>
+</html>

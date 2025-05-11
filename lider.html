@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Лидеры по приглашениям</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-image: url('https://i.pinimg.com/736x/6b/03/16/6b03165c481dd85356f62043f641b154.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            color: white; /* Цвет текста для лучшей видимости на фоне */
+            text-shadow: 2px 2px 4px #000000; /* Тень для текста */
+        }
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 20px auto;
+            background-color: rgba(255, 255, 255, 0.8); /* Полупрозрачный фон для таблицы */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Тень для таблицы */
+            color: black; /* Цвет текста в таблице */
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Топ приглашающих</h1>
+    <table id="leaderboard">
+        <thead>
+            <tr>
+                <th>Место</th>
+                <th>Имя</th>
+                <th>Приглашено</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Данные будут добавлены сюда через JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+       async function getLeadersFromAPI() { // Получение лидеров из API
+            try {
+                const response = await fetch('/api/leaders'); // Укажите ваш URL
+                const data = await response.json(); // Преобразуем ответ в JSON
+                return data;
+            } catch (error) {
+                console.error("Ошибка при получении данных:", error);
+                return []; // Возвращаем пустой массив в случае ошибки
+            }
+        }
+        async function displayLeaders() {
+            const leaders = await getLeadersFromAPI();
+            const tableBody = document.querySelector("#leaderboard tbody");
+
+            leaders.forEach((leader, index) => { // Заполнение таблицы данными
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${leader.name}</td>
+                    <td>${leader.invited}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        displayLeaders(); // Вызов функции для отображения данных
+    </script>
+</body>
+</html>
