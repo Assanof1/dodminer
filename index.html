@@ -2,9 +2,9 @@
 <html>
 <head>
     <title>DodMiner</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
       body {
-          background-image: url('https://a-static.besthdwallpaper.com/bloody-mary-lunox-mobile-legends-ml-wallpaper-828x1792-67890_218.jpg');
           background-size: cover;
           background-repeat: no-repeat;
           display: flex;
@@ -16,6 +16,7 @@
           font-family: 'Arial', sans-serif;
           color: #fff;
           text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+          background-color: #222; /* Добавим темный фон */
       }
 
       .energy-gauge { /* Стили для табло энергии */
@@ -81,17 +82,9 @@
           padding: 10px 20px; border-radius: 5px;
           display: inline-block; margin-top: 20px;
       }
-
-      #background-url { /* Поле URL фона */
-          padding: 10px; border: 1px solid #ccc;
-          border-radius: 5px; margin-right: 10px;
-          color: #333;
-      }
     </style>
 </head>
 <body>
-
-  <a href="oos.html"><div class="profile-button">👤</div></a>
 
   <div id="diamond-count">💎 Алмазов: 0.00</div>
   <div class="diamond" onclick="mineDiamond()">💎</div>
@@ -102,11 +95,8 @@
       <div class="energy-text" id="energy-text">⚡ 500</div>
   </div>
 
-  <a href="#" class="referral-link" onclick="generateReferralLink()">Получить реф. ссылку</a>
-
-  <a href="lider.html"><button class="leaderboard-button">Лидеры</button></a>
-
-  <div type="url" id="background-url" placeholder="https://digiseller.mycdn.ink/preview/1280933/p1_4393124_7034c2c3.jpg">
+  <button class="invite-button" onclick="generateReferralLink()">Пригласить друга</button>
+  <button class="leaderboard-button" onclick="openLeaderboard()">Лидеры</button>
 
   <script>
     let energy = 500; // Начальное значение энергии
@@ -127,51 +117,30 @@
 
             document.getElementById('diamond-count').innerText = `💎 Алмазов: ${diamondCount.toFixed(2)}`;
             document.getElementById('mine-text').innerText = 'Dod-Mine';
+            Telegram.WebApp.HapticFeedback.impact('light'); //Вибрация
         } else {
-            alert("Нет энергии! Подождите восстановления.");
+            Telegram.WebApp.showAlert("Нет энергии! Подождите восстановления.");
         }
     }
 
-    function generateReferralLink() { //Генерирует и показывает ссылку
+    function generateReferralLink() {
         const referralCode = generateReferralCode();
-        const referralLink = `https://t.me/MLBB_Assanofbot?start=${referralCode}`; // Ссылка для телеграм бота
-        alert("Ваша реферальная ссылка: " + referralLink);
+        const referralLink = `https://t.me/${Telegram.WebApp.initDataUnsafe.user.username}?start=${referralCode}`; //  ссылка
+        Telegram.WebApp.copyText(referralLink);
+        Telegram.WebApp.showAlert("Реферальная ссылка скопирована!");
     }
 
     function generateReferralCode() { //Генерирует уникальный код
         return Math.random().toString(36).substring(2, 15);
     }
 
-    window.onload = function() { //Проверяет код при загрузке страницы
-        const urlParams = new URLSearchParams(window.location.search);
-        const startParam = urlParams.get('start');
-        if (startParam) {
-            sendReferralCodeToServer(startParam);
-        }
-    }
-
-    async function sendReferralCodeToServer(code) { //Отправка на сервер
-        try {
-            const response = await fetch('/register_referral', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({referralCode: code})
-            });
-            if (response.ok) {
-                diamondCount += 2; // Прибавляем 2 алмаза
-                document.getElementById('diamond-count').innerText = `💎 Алмазов: ${diamondCount.toFixed(2)}`;
-            }
-        } catch (error) {
-            console.error("Ошибка отправки реф. кода:", error);
-        }
-    }
-
-    function changeBackground() {
-        var url = document.getElementById('background-url').value;
-        document.body.style.backgroundImage = `url('${url}')`;
+    function openLeaderboard() {
+        Telegram.WebApp.openLink("https://example.com/leaderboard"); // Заглушка
     }
 
     updateEnergyDisplay();
+
+    Telegram.WebApp.ready(); //Готовность
   </script>
 
 </body>
