@@ -1,147 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>DodMiner</title>
+    <title>Clicker Game</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-      body {
-          background-size: cover;
-          background-repeat: no-repeat;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          height: 100vh;
-          margin: 0;
-          font-family: 'Arial', sans-serif;
-          color: #fff;
-          text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-          background-color: #222; /* Добавим темный фон */
-      }
-
-      .energy-gauge { /* Стили для табло энергии */
-          position: relative; width: 100px; height: 45px;
-          background-color: #222; border-radius: 10px;
-          overflow: hidden; margin-top: 20px;
-      }
-
-      .energy-bar { /* Полоса энергии */
-          position: absolute; bottom: 0; left: 0;
-          width: 100%; height: 0%; background-color: #ffc107;
-          transition: height 0.3s ease;
-      }
-
-      .energy-text { /* Текст энергии */
-          position: absolute; top: 50%; left: 50%;
-          transform: translate(-50%, -50%); font-size: 12px;
-          color: #fff; z-index: 1;
-      }
-
-      .diamond { /* Стиль алмаза */
-          width: 120px; height: 120px;
-          background-color: #64b5f6; border-radius: 50%;
-          display: flex; align-items: center; justify-content: center;
-          font-size: 30px; cursor: pointer; color: #fff;
-          transition: transform 0.2s, box-shadow 0.2s;
-          box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-      }
-
-      .diamond:hover {
-          transform: scale(1.1); box-shadow: 0 6px 12px rgba(0,0,0,0.5);
-      }
-
-      .profile-button { /* Кнопка профиля */
-          position: absolute; top: 20px; right: 20px;
-          width: 60px; height: 60px; border-radius: 50%;
-          background-color: #ffc107; display: flex;
-          align-items: center; justify-content: center;
-          cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-          color: #333; font-size: 24px;
-      }
-
-      .profile-button:hover {
-          transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-      }
-
-      .invite-button, .leaderboard-button { /* Кнопки */
-          margin-top: 20px; padding: 12px 24px;
-          background-color: #4caf50; color: #fff;
-          border: none; border-radius: 5px;
-          cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-          font-size: 16px;
-      }
-
-      .invite-button:hover, .leaderboard-button:hover {
-          transform: scale(1.05); box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-      }
-
-      .referral-link { /* Стиль для реф. ссылки */
-          background-color: #3498db; color: #fff;
-          padding: 10px 20px; border-radius: 5px;
-          display: inline-block; margin-top: 20px;
-      }
+       /* Упрощенный стиль, стилизация под Notcoin потребует больше CSS */
+        body {
+            background-color: #1e1e1e; color: #fff;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            height: 100vh; margin: 0; font-family: sans-serif;
+        }
+        #coin {
+            width: 150px; height: 150px; border-radius: 50%;
+            background-color: #ffcc00; /* Желтый цвет монеты */
+            cursor: pointer; margin-bottom: 20px;
+        }
+        #score { font-size: 24px; }
     </style>
 </head>
 <body>
+    <div id="score">Монеты: 0</div>
+    <div id="coin" onclick="tapCoin()"></div>
 
-  <div id="diamond-count">💎 Алмазов: 0.00</div>
-  <div class="diamond" onclick="mineDiamond()">💎</div>
-  <div id="mine-text"></div>
+    <script>
+        let score = 0;
+        let telegram = window.Telegram.WebApp; // Получаем WebApp
+        telegram.ready(); // Указываем, что готовы
 
-  <div class="energy-gauge">
-      <div class="energy-bar" id="energy-bar"></div>
-      <div class="energy-text" id="energy-text">⚡ 500</div>
-  </div>
-
-  <button class="invite-button" onclick="generateReferralLink()">Пригласить друга</button>
-  <button class="leaderboard-button" onclick="openLeaderboard()">Лидеры</button>
-
-  <script>
-    let energy = 500; // Начальное значение энергии
-    let diamondCount = 0.00; // Начальное количество алмазов
-
-    function updateEnergyDisplay() {
-        const energyPercentage = (energy / 500) * 100;
-        document.getElementById('energy-bar').style.height = `${energyPercentage}%`;
-        document.getElementById('energy-text').innerText = `⚡ ${energy}`;
-    }
-
-    function mineDiamond() {
-        if (energy > 0) {
-            energy--;
-            diamondCount += 0.02;
-
-            updateEnergyDisplay();
-
-            document.getElementById('diamond-count').innerText = `💎 Алмазов: ${diamondCount.toFixed(2)}`;
-            document.getElementById('mine-text').innerText = 'Dod-Mine';
-            Telegram.WebApp.HapticFeedback.impact('light'); //Вибрация
-        } else {
-            Telegram.WebApp.showAlert("Нет энергии! Подождите восстановления.");
+        function tapCoin() {
+            score++;
+            document.getElementById('score').innerText = `Монеты: ${score}`;
+            telegram.HapticFeedback.impact('light'); // Вибрация
         }
-    }
-
-    function generateReferralLink() {
-        const referralCode = generateReferralCode();
-        const referralLink = `https://t.me/${Telegram.WebApp.initDataUnsafe.user.username}?start=${referralCode}`; //  ссылка
-        Telegram.WebApp.copyText(referralLink);
-        Telegram.WebApp.showAlert("Реферальная ссылка скопирована!");
-    }
-
-    function generateReferralCode() { //Генерирует уникальный код
-        return Math.random().toString(36).substring(2, 15);
-    }
-
-    function openLeaderboard() {
-        Telegram.WebApp.openLink("https://example.com/leaderboard"); // Заглушка
-    }
-
-    updateEnergyDisplay();
-
-    Telegram.WebApp.ready(); //Готовность
-  </script>
-
+    </script>
 </body>
 </html>
