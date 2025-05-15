@@ -4,34 +4,39 @@
     <title>Clicker Game</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-       /* Упрощенный стиль, стилизация под Notcoin потребует больше CSS */
-        body {
-            background-color: #1e1e1e; color: #fff;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            height: 100vh; margin: 0; font-family: sans-serif;
-        }
-        #coin {
-            width: 150px; height: 150px; border-radius: 50%;
-            background-color: #ffcc00; /* Желтый цвет монеты */
-            cursor: pointer; margin-bottom: 20px;
-        }
-        #score { font-size: 24px; }
+        /* Основные стили */
+        body { background-color: #1e1e1e; color: #fff; font-family: sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; height: 100vh; }
+        #coin { width: 120px; height: 120px; border-radius: 50%; background-color: #ffcc00; cursor: pointer; margin: 20px; }
+        #score { font-size: 20px; margin-bottom: 10px; }
+        .hud { display: flex; justify-content: space-around; width: 100%; padding: 10px; box-sizing: border-box; }
+        .hud-item { display: flex; align-items: center; font-size: 14px; }
+        .hud-item img { width: 20px; height: 20px; margin-right: 5px; } /* Иконки */
+        .icon { width: 30px; height: 30px; cursor: pointer; margin: 10px; } /* Иконки профиля, заданий */
     </style>
 </head>
 <body>
-    <div id="score">Монеты: 0</div>
+    <div class="hud">
+        <div class="hud-item"><img src="coin.png" alt="Монеты"> <span id="score">0</span></div>
+        <div class="hud-item"><img src="energy.png" alt="Энергия"> <span id="energy">100</span></div>
+        <img src="profile.png" alt="Профиль" class="icon">
+        <img src="tasks.png" alt="Задания" class="icon">
+    </div>
     <div id="coin" onclick="tapCoin()"></div>
+    <div id="level">Уровень: 1</div>
 
     <script>
-        let score = 0;
-        let telegram = window.Telegram.WebApp; // Получаем WebApp
-        telegram.ready(); // Указываем, что готовы
+        let score = 0; let energy = 100; let level = 1;
+        let telegram = window.Telegram.WebApp; telegram.ready();
 
         function tapCoin() {
-            score++;
-            document.getElementById('score').innerText = `Монеты: ${score}`;
-            telegram.HapticFeedback.impact('light'); // Вибрация
+            if (energy > 0) { score++; energy -= 5; updateUI(); telegram.HapticFeedback.impact('light'); }
+            else { telegram.showAlert("Нет энергии!"); }
+        }
+
+        function updateUI() {
+            document.getElementById('score').innerText = score;
+            document.getElementById('energy').innerText = energy;
+            if (score >= level * 100) { level++; document.getElementById('level').innerText = `Уровень: ${level}`; } // Пример системы уровней
         }
     </script>
 </body>
